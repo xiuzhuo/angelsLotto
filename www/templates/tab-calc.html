@@ -1,0 +1,22 @@
+<ion-view view-title="Calculate Next Lotto" on-hold="show1()">
+  <ion-content class="padding">
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="refresh()">
+    </ion-refresher>
+
+    <div class="bar bar-royal item" on-tap="showOptionDialog()">
+      <h1 class="title">{{selectedGame.name}} - {{count}}</h1>
+    </div>
+    <ion-list style="text-align:center;">
+      <ion-item class="row card" ng-repeat="lotto in lottos" type="item-text-wrap">
+        <div class="col" ng-repeat="value in lotto.values">
+          {{value}}
+        </div>
+        <div class="col assertive" ng-repeat="extra in lotto.extras">
+          {{extra}}
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
