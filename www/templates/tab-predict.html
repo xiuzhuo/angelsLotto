@@ -1,20 +1,22 @@
 <ion-view view-title="Predict">
+  <ion-nav-buttons side="primary">
+    <button class="button button-clear" ng-click="showOptionDialog()">
+      {{count}} × {{selectedGame.name}}
+    </button>
+  </ion-nav-buttons>
   <ion-nav-buttons side="secondary">
-    <button class="button" ng-click="refreshPredict()" on-hold="showOptionDialog()">
-      {{count}} pieces of {{selectedGame.name}}
+    <button class="button button-clear icon ion-ios-refresh-outline" ng-click="refreshPredict()">
     </button>
   </ion-nav-buttons>
 
-  <ion-content class="padding">
-    <ion-list style="text-align:center;">
-      <ion-item class="row card" ng-repeat="lotto in lottos" type="item-text-wrap">
-        <div class="col" ng-repeat="value in lotto.values">
+  <ion-content overflow-scroll="true" has-bouncing="true">
+      <div class="button button-light row" ng-repeat="lotto in lottos" style="text-align:center" >
+        <div class="col positive" ng-repeat="value in lotto.values">
           {{value}}
         </div>
         <div class="col assertive" ng-repeat="extra in lotto.extras">
           {{extra}}
         </div>
-      </ion-item>
-    </ion-list>
+      </div>
   </ion-content>
 </ion-view>

@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ionic'])
 
-.controller('ResultsCtrl', function($scope, $ionicActionSheet, $timeout,$http, Games) {
+.controller('ResultsCtrl', function($scope, $ionicActionSheet, $timeout, $http, Games) {
   // $scope.selectedGame = JSON.parse(window.localStorage['selectedGame'] || null);
   //alert(JSON.stringify(Games.getSelected()))
   // $http.get('/new-items')
@@ -13,29 +13,21 @@ angular.module('starter.controllers', ['ionic'])
   //  });
   var parseGame = function(jsonText){
     alert(jsonText);
-    var data=JSON.parse(jsonText);
-    console.log(data[2015][0]);
+    var data = JSON.parse(jsonText);
+    console.log(data[2015]);
   }
-
   $scope.selectedGame = Games.getSelected();
-  $scope.refreshGame = function(){
-    alert($scope.selectedGame.apis.archiv);
+  $scope.refreshGame = (function(){
     $http.get($scope.selectedGame.apis.archiv)
-    .success(function(data, status, headers, config){
-      //alert(JSON.stringify(data));
-      var result=JSON.parse(data);
-      alert(true);
-      parseGame(result);
-    })
-  .error(function(data, status, headers, config) {
-      //alert($scope.selectedGame.dummyData);
-      // called asynchronously if an error occurs
-      // or server returns response with an error status.
-      alert(false);
-      parseGame($scope.selectedGame.dummyData);
-    });
-  };
-  $scope.refreshGame();
+      .success(function(data, status, headers, config){
+        alert(true);
+        parseGame(JSON.stringify(data));
+      })
+      .error(function(data, status, headers, config) {
+        alert(false);
+        parseGame($scope.selectedGame.dummyData);
+      });
+  }());
 })
 .controller('PredictCtrl', function($scope, Games, $ionicActionSheet, $ionicPopup, $timeout, $q, $window) {
   $scope.games = Games.all();
@@ -133,7 +125,7 @@ angular.module('starter.controllers', ['ionic'])
         $scope.count = $scope.popup.count;
         $scope.selectedGame = $scope.popup.selectedGame;
         Games.saveSelected($scope.selectedGame);
-        $scope.refresh();
+        $scope.refreshPredict();
         console.log('Tapped!', $scope.popup.count);
       }
     });
@@ -142,11 +134,8 @@ angular.module('starter.controllers', ['ionic'])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
+.controller('OptionsCtrl', function($scope, Options) {
+  $scope.options = Options.all();
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
@@ -156,11 +145,12 @@ angular.module('starter.controllers', ['ionic'])
 .controller('AboutCtrl', function($scope, $ionicPopup, Games) {
   $scope.games = Games.all();
   $scope.popup = {};
-  $scope.aboutMe = function(detail){
+  $scope.aboutMe = function(showDetail){
     $scope.popup.sum = 0;
     $scope.popup.winnedGame =  Games.getSelected();
-    $ionicPopup.show({
-      title: 'About me',
+    $scope.popup.showDetail = showDetail;
+    var options = {
+      title: 'About More!',
       subTitle: 'I am very clever!',
       templateUrl: 'templates/popup-about.html',
       scope: $scope,
@@ -170,21 +160,24 @@ angular.module('starter.controllers', ['ionic'])
           onTap: function(e) {
             return false;
           }
-        },
-        {
-          text: '<b>Tell</b>',
-          type: 'button-positive',
-          onTap: function(e) {
-            if (!$scope.popup.sum) {
-              e.preventDefault();
-            } else {
-              return true;
-            }
-            return false;
-          }
         }
       ]
-    }).then(function(success) {
+    };
+    if (showDetail){
+      options.buttons.push({
+        text: '<b>Know More!</b>',
+        type: 'button-positive',
+        onTap: function(e) {
+          if (!$scope.popup.sum) {
+            e.preventDefault();
+          } else {
+            return true;
+          }
+          return false;
+        }
+      });
+    }
+    $ionicPopup.show(options).then(function(success) {
       if (success){
         alert($scope.popup.sum);
       }

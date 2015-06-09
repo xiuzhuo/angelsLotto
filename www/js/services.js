@@ -91,6 +91,50 @@ angular.module('starter.services', [])
   };
   return actions;
 })
+.factory('Options', function($window){
+  var saveOption = function(option){
+    $window.localStorage['options.' + option.key] = JSON.stringify(option.value);
+  };
+
+  var loadOption = function(option){
+    if ($window.localStorage['options.' + option.key]){
+      option.value = JSON.parse($window.localStorage['options.' + option.key]);
+    }
+  };
+
+  var styles = [
+    {
+      name: 'positive'
+    },
+    {
+      name: 'calm'
+    }
+  ];
+
+  var options = {
+    style : {
+      key : 'style',
+      value : styles[1],
+      dataSet : styles
+    }
+  };
+  var initOptions = function(){
+    for (var option in options){
+      loadOption(option);
+    }
+  };
+  initOptions();
+  return {
+    all: function(){
+      return options;
+    },
+    saveAll: function(){
+      for (option in options){
+        saveOption(option);
+      }
+    }
+  };
+})
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 

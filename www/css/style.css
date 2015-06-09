@@ -1,1 +1,21 @@
 /* Empty. Add your own CSS if you like */
+body {
+
+}
+
+.button-round{
+  background: $assertive !important;
+  z-index: 12 !important;
+  border-radius: 15% !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  transform: translate3d(0, 0, 0) !important;
+  -webkit-transition: 0.2s linear !important;
+  transition: 0.2s linear !important;
+  -webkit-transition-property: -webkit-transform, all !important;
+  transition-property: transform, all !important;
+}
+
+.no-padding {
+    padding: 0px !important;
+}
