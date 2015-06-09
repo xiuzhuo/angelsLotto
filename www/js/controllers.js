@@ -18,18 +18,20 @@ angular.module('starter.controllers', ['ionic'])
   }
 
   $scope.selectedGame = Games.getSelected();
-  //alert($scope.selectedGame.apis.archiv);
   $scope.refreshGame = function(){
-    $http.get($scope.selectedGame.apis.archiv).success(function(data, status, headers, config){
+    alert($scope.selectedGame.apis.archiv);
+    $http.get($scope.selectedGame.apis.archiv)
+    .success(function(data, status, headers, config){
       //alert(JSON.stringify(data));
       var result=JSON.parse(data);
-      alert(JSON.stringify(result));
+      alert(true);
       parseGame(result);
     })
   .error(function(data, status, headers, config) {
       //alert($scope.selectedGame.dummyData);
       // called asynchronously if an error occurs
       // or server returns response with an error status.
+      alert(false);
       parseGame($scope.selectedGame.dummyData);
     });
   };
@@ -102,7 +104,7 @@ angular.module('starter.controllers', ['ionic'])
     var myPopup = $ionicPopup.show({
       title: '',
       subTitle: '',
-      templateUrl: 'templates/popup-calc-options.html',
+      templateUrl: 'templates/popup-predict.html',
       scope: $scope,
       buttons: [
         { text: 'Cancel',
@@ -126,8 +128,7 @@ angular.module('starter.controllers', ['ionic'])
           }
         }
       ]
-    });
-    myPopup.then(function(saved) {
+    }).then(function(saved) {
       if (saved){
         $scope.count = $scope.popup.count;
         $scope.selectedGame = $scope.popup.selectedGame;
@@ -152,8 +153,76 @@ angular.module('starter.controllers', ['ionic'])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
+.controller('AboutCtrl', function($scope, $ionicPopup, Games) {
+  $scope.games = Games.all();
+  $scope.popup = {};
+  $scope.aboutMe = function(detail){
+    $scope.popup.sum = 0;
+    $scope.popup.winnedGame =  Games.getSelected();
+    $ionicPopup.show({
+      title: 'About me',
+      subTitle: 'I am very clever!',
+      templateUrl: 'templates/popup-about.html',
+      scope: $scope,
+      buttons: [
+        {
+          text: 'Cancel',
+          onTap: function(e) {
+            return false;
+          }
+        },
+        {
+          text: '<b>Tell</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.popup.sum) {
+              e.preventDefault();
+            } else {
+              return true;
+            }
+            return false;
+          }
+        }
+      ]
+    }).then(function(success) {
+      if (success){
+        alert($scope.popup.sum);
+      }
+    });
+  }
+
+  $scope.makeDonate = function(){
+    $scope.popup.sum = null;
+    $scope.popup.winnedGame =  Games.getSelected();
+    $ionicPopup.show({
+      title: 'Donate',
+      subTitle: '',
+      templateUrl: 'templates/popup-donate.html',
+      scope: $scope,
+      buttons: [
+        {
+          text: 'Cancel',
+          onTap: function(e) {
+            return false;
+          }
+        },
+        {
+          text: '<b>Donate</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.popup.sum) {
+              e.preventDefault();
+            } else {
+              return true;
+            }
+            return false;
+          }
+        }
+      ]
+    }).then(function(success) {
+      if (success){
+        alert($scope.popup.sum);
+      }
+    });
+  }
 });

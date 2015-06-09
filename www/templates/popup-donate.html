@@ -1,0 +1,13 @@
+<label class="item item-input item-select">
+  <div class="input-label" style="text-align:center">
+    Type
+  </div>
+  <select ng-model="popup.winnedGame" ng-options="game.name for game in games">
+  </select>
+</label>
+<div class="item item-input">
+  <div class="input-label" style="text-align:center">
+    Sum
+  </div>
+  <input type="number" name="sum" ng-model="popup.sum" min="1" style="text-align:center"/>
+</div>
