@@ -47,13 +47,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
- 
-  .state('tab.calc', {
-    url: '/calc',
+
+  .state('tab.predict', {
+    url: '/predict',
     views: {
-      'tab-calc': {
-        templateUrl: 'templates/tab-calc.html',
-        controller: 'CalcCtrl'
+      'tab-predict': {
+        templateUrl: 'templates/tab-predict.html',
+        controller: 'PredictCtrl'
       }
     }
   })

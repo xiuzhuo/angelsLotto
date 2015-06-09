@@ -1,8 +1,8 @@
 angular.module('starter.controllers', ['ionic'])
 
-.controller('ResultsCtrl', function($scope, $ionicActionSheet, $timeout, Games) {
+.controller('ResultsCtrl', function($scope, $ionicActionSheet, $timeout,$http, Games) {
   // $scope.selectedGame = JSON.parse(window.localStorage['selectedGame'] || null);
-  alert(JSON.stringify(Games.getSelected()))
+  //alert(JSON.stringify(Games.getSelected()))
   // $http.get('/new-items')
   //  .success(function(newItems) {
   //    $scope.items = newItems;
@@ -11,15 +11,38 @@ angular.module('starter.controllers', ['ionic'])
   //    // Stop the ion-refresher from spinning
   //    $scope.$broadcast('scroll.refreshComplete');
   //  });
+  var parseGame = function(jsonText){
+    alert(jsonText);
+    var data=JSON.parse(jsonText);
+    console.log(data[2015][0]);
+  }
+
+  $scope.selectedGame = Games.getSelected();
+  //alert($scope.selectedGame.apis.archiv);
+  $scope.refreshGame = function(){
+    $http.get($scope.selectedGame.apis.archiv).success(function(data, status, headers, config){
+      //alert(JSON.stringify(data));
+      var result=JSON.parse(data);
+      alert(JSON.stringify(result));
+      parseGame(result);
+    })
+  .error(function(data, status, headers, config) {
+      //alert($scope.selectedGame.dummyData);
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+      parseGame($scope.selectedGame.dummyData);
+    });
+  };
+  $scope.refreshGame();
 })
-.controller('CalcCtrl', function($scope, Games, $ionicActionSheet, $ionicPopup, $timeout, $q, $window) {
-  $scope.games=Games.all();
+.controller('PredictCtrl', function($scope, Games, $ionicActionSheet, $ionicPopup, $timeout, $q, $window) {
+  $scope.games = Games.all();
   Games.call(Games.get(0));
   if (!$scope.count){
     $scope.count = 10;
   };
   $scope.selectedGame = Games.getSelected();
-  $scope.refresh = function(){
+  $scope.refreshPredict = function(){
     var selectedGame = $scope.selectedGame;
     var Lottos = [];
     var calc = function() {
@@ -29,7 +52,7 @@ angular.module('starter.controllers', ['ionic'])
         var allNumbers = [];
         var allExtras = [];
 
-        for (var i=0; i < count;i++){
+        for (var i = 0; i < count;i++){
           var lotto={};
           lotto.values=[];
           lotto.extras=[];
@@ -71,7 +94,7 @@ angular.module('starter.controllers', ['ionic'])
     });
     return this;
   };
-  $scope.refresh();
+  $scope.refreshPredict();
   $scope.showOptionDialog = function(){
     $scope.popup = {};
     $scope.popup.count = $scope.count;

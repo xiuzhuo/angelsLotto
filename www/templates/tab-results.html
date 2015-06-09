@@ -1,10 +1,14 @@
 <ion-view view-title="Results">
+  <ion-nav-buttons side="secondary">
+    <button class="button" ng-click="refreshGame()">
+     refresh
+    </button>
+  </ion-nav-buttons>
   <ion-content on-hold="show()">
 
     <ion-list>
     <ion-toggle  ng-model="settings.enableFriends">
         Enable Friends
-
     </ion-toggle>
     </ion-list>
   </ion-content>

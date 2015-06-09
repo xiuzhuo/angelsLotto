@@ -1,13 +1,11 @@
-<ion-view view-title="Calculate Next Lotto" on-hold="show1()">
-  <ion-content class="padding">
-    <ion-refresher
-      pulling-text="Pull to refresh..."
-      on-refresh="refresh()">
-    </ion-refresher>
+<ion-view view-title="Predict">
+  <ion-nav-buttons side="secondary">
+    <button class="button" ng-click="refreshPredict()" on-hold="showOptionDialog()">
+      {{count}} pieces of {{selectedGame.name}}
+    </button>
+  </ion-nav-buttons>
 
-    <div class="bar bar-royal item" on-tap="showOptionDialog()">
-      <h1 class="title">{{selectedGame.name}} - {{count}}</h1>
-    </div>
+  <ion-content class="padding">
     <ion-list style="text-align:center;">
       <ion-item class="row card" ng-repeat="lotto in lottos" type="item-text-wrap">
         <div class="col" ng-repeat="value in lotto.values">
