@@ -1,13 +1,13 @@
 <ion-view view-title="Options">
   <ion-content>
     <ion-list>
-      <div class="item {{options.style.value.name}} item-button-right" ng-click="">
+      <div class="item {{options.style.value.name}} item-button-right" ng-click="showStyleDialog()">
           Style
-          <button class="button button-{{options.style.value.name}}" ng-click="">
+          <button class="button button-{{options.style.value.name}}">
           {{options.style.value.name}}
         </button>
       </div>
-      <ion-toggle  ng-model="settings.enableFriends"  toggle-class="toggle-{{options.style.value.name}}">
+      <ion-toggle  ng-model="settings.enableFriends"  toggle-class="toggle-{{options.style.value.name}}" class="{{options.style.value.name}}">
           Enable Friends
       </ion-toggle>
     </ion-list>

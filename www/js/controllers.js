@@ -1,5 +1,7 @@
 angular.module('starter.controllers', ['ionic'])
-
+.controller('TabCtrl', function($scope, Options) {
+  $scope.options = Options.all();
+})
 .controller('ResultsCtrl', function($scope, $ionicActionSheet, $timeout, $http, Games) {
   // $scope.selectedGame = JSON.parse(window.localStorage['selectedGame'] || null);
   //alert(JSON.stringify(Games.getSelected()))
@@ -134,8 +136,51 @@ angular.module('starter.controllers', ['ionic'])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('OptionsCtrl', function($scope, Options) {
+.controller('OptionsCtrl', function($scope, $ionicPopup, Options) {
   $scope.options = Options.all();
+  $scope.showStyleDialog = function(){
+    console.log(Options.all());
+    $scope.popup = {};
+    $scope.popup.style = {};
+    $scope.popup.style = $scope.options.style.value;
+    console.log(  $scope.popup.style);
+    var myPopup = $ionicPopup.show({
+      title: '',
+      subTitle: '',
+      templateUrl: 'templates/popup-options-style.html',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel',
+          onTap: function(e) {
+            return false;
+          }
+        },
+        { text: '<b>Save</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.popup.count) {
+              //don't allow the user to close unless he enters wifi password
+              e.preventDefault();
+            } else if ($scope.popup.count<=0){
+              $scope.popup.count = 10;
+              e.preventDefault();
+            } else {
+              return true;
+            }
+            return false;
+          }
+        }
+      ]
+    }).then(function(saved) {
+      if (saved){
+        $scope.count = $scope.popup.count;
+        $scope.selectedGame = $scope.popup.selectedGame;
+        Games.saveSelected($scope.selectedGame);
+        $scope.refreshPredict();
+        console.log('Tapped!', $scope.popup.count);
+      }
+    });
+  };
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {

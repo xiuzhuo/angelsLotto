@@ -4,7 +4,7 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 
-<ion-tabs class="tabs-icon-top tabs-positive">
+<ion-tabs class="tabs-icon-top tabs-{{options.style.value.name}}">
 
   <ion-tab title="Results" icon-off="ion-social-euro-outline" icon-on="ion-social-euro" href="#/tab/results">
     <ion-nav-view name="tab-results"></ion-nav-view>
@@ -28,4 +28,4 @@ navigation history that also transitions its views in and out.
   <ion-tab title="About" icon-off="ion-ios-help-outline" icon-on="ion-ios-help" href="#/tab/about">
     <ion-nav-view name="tab-about"></ion-nav-view>
   </ion-tab>
-.</ion-tabs>
+</ion-tabs>

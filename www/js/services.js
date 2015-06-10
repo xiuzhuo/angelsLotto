@@ -91,7 +91,64 @@ angular.module('starter.services', [])
   };
   return actions;
 })
-.factory('Options', function($window){
+.factory('Styles', function($window){
+  var styles = {
+    light : {
+      id : 0,
+      name : 'light'
+    },
+    stable : {
+      id : 1,
+      name : 'stable'
+    },
+    positive: {
+      id : 2,
+      name : 'positive'
+    },
+    calm : {
+      id : 3,
+      name : 'calm'
+    },
+    balanced : {
+      id : 4,
+      name : 'balanced'
+    },
+    energized : {
+      id : 5,
+      name : 'energized'
+    },
+    assertive : {
+      id : 6,
+      name : 'assertive'
+    },
+    royal : {
+      id : 7,
+      name : 'royal'
+    },
+    dark : {
+      id : 8,
+      name : 'dark'
+    }
+
+  };
+  return {
+    all : function(){
+      return styles;
+    },
+    default : function(){
+      return styles.positive;
+    },
+    get : function(styleId){
+      for (var style in styles){
+        if (style.id === id || style.id === parseInt(styleId)){
+          return style;
+        }
+      }
+    }
+  };
+})
+
+.factory('Options', function($window, Styles){
   var saveOption = function(option){
     $window.localStorage['options.' + option.key] = JSON.stringify(option.value);
   };
@@ -135,6 +192,8 @@ angular.module('starter.services', [])
     }
   };
 })
+
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
