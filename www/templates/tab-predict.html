@@ -1,7 +1,7 @@
 <ion-view view-title="Predict">
   <ion-nav-buttons side="primary">
     <button class="button button-clear" ng-click="showOptionDialog()">
-      {{count}} × {{selectedGame.name}}
+      {{selectedGame.name}} × {{count}}
     </button>
   </ion-nav-buttons>
   <ion-nav-buttons side="secondary">
@@ -12,10 +12,10 @@
   <ion-content overflow-scroll="true" has-bouncing="true">
       <div class="button button-light row" ng-repeat="lotto in lottos" style="text-align:center" >
         <div class="col positive" ng-repeat="value in lotto.values">
-          {{value}}
+          <button class="ball ball-normal">{{value}}</button>
         </div>
         <div class="col assertive" ng-repeat="extra in lotto.extras">
-          {{extra}}
+          <button class="ball ball-super">{{extra}}</button>
         </div>
       </div>
   </ion-content>

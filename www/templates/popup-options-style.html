@@ -1,8 +1,8 @@
 <ion-list>
-  <ion-radio ng-repeat="style in options.style.dataSet"
-              class="style.name"
-              ng-model="popup.style.name"
-              ng-value="style.name">
-    <button class="button button-{{style.name}} radio">{{style.name}} 1</button>
+  <ion-radio ng-repeat="style in options.style.all"
+              class="{{style.name}}"
+              ng-model="popup.styleId"
+              ng-value="style.id">
+    <button class="button button-full button-{{style.name}} radio">{{style.name}}</button>
   </ion-radio>
 </ion-list>

@@ -1,35 +1,79 @@
 angular.module('starter.controllers', ['ionic'])
+
+.controller('MainCtrl', function($scope, Options) {
+  $scope.options = Options.all();
+})
+
 .controller('TabCtrl', function($scope, Options) {
   $scope.options = Options.all();
 })
-.controller('ResultsCtrl', function($scope, $ionicActionSheet, $timeout, $http, Games) {
-  // $scope.selectedGame = JSON.parse(window.localStorage['selectedGame'] || null);
-  //alert(JSON.stringify(Games.getSelected()))
-  // $http.get('/new-items')
-  //  .success(function(newItems) {
-  //    $scope.items = newItems;
-  //  })
-  //  .finally(function() {
-  //    // Stop the ion-refresher from spinning
-  //    $scope.$broadcast('scroll.refreshComplete');
-  //  });
-  var parseGame = function(jsonText){
-    alert(jsonText);
+
+.controller('ResultsCtrl', function($scope, $ionicHistory, $ionicActionSheet, $timeout, $http, Games) {
+  Games.setOnSelectedChangeListener('ResultsCtrl', function(){
+    $ionicHistory.clearCache();
+  });
+  var parseResultGeneral = function(jsonText, drawday, fromCache){
     var data = JSON.parse(jsonText);
-    console.log(data[2015]);
+    $scope.general = data;
+    $scope.result = data[data.years[0]][0];
+    console.log($scope.result);
+    var years = data.years;
+    for (var key in data){
+      if (key == years[0]){
+        // for (key2 in data[key]){
+        //   console.log(data[key][key2].date == drawday);
+        //   if (data[key][key2].date == drawday){
+        //     $scope.result = data[key][key2];
+        //     console.log($scope.result);
+        //   }
+        // }
+      } else if (key == 'years'){
+
+      } else {
+        drawday = key;
+      }
+    }
+
+    fetchResultDetail(drawday, fromCache);
   }
-  $scope.selectedGame = Games.getSelected();
-  $scope.refreshGame = (function(){
-    $http.get($scope.selectedGame.apis.archiv)
+  var parseResultDetail = function(jsonText, drawday, fromCache){
+    var data = JSON.parse(jsonText);
+    $scope.drawday = drawday;
+    $scope.detail = data;
+  }
+  var fetchResultGeneral = function(drawday){
+    $http.get(Games.getSelected().apis.archiv)
       .success(function(data, status, headers, config){
-        alert(true);
-        parseGame(JSON.stringify(data));
+        console.log(data);
+        parseResultGeneral(JSON.stringify(data), drawday, false);
       })
       .error(function(data, status, headers, config) {
-        alert(false);
-        parseGame($scope.selectedGame.dummyData);
+
+        parseResultGeneral($scope.selectedGame.dummyDataGeneral, drawday, true);
       });
-  }());
+  }
+  var fetchResultDetail = function(drawday){
+
+    if (drawday){
+      $http.get(Games.getSelected().apis.archiv+'?drawday='+drawday)
+        .success(function(data, status, headers, config){
+          parseResultDetail(JSON.stringify(data), drawday, false);
+        })
+        .error(function(data, status, headers, config) {
+          parseResultDetail($scope.selectedGame.dummyDataDetail, drawday, true);
+        });
+    }
+  }
+  $scope.changeDrawday = function(data){
+    fetchResultDetail(data);
+  }
+  $scope.games = Games.all();
+  $scope.selectedGame = Games.getSelected();
+  $scope.refreshGame = function(){
+    fetchResultGeneral();
+  };
+  $scope.refreshGame();
+  console.log($scope.refreshGame);
 })
 .controller('PredictCtrl', function($scope, Games, $ionicActionSheet, $ionicPopup, $timeout, $q, $window) {
   $scope.games = Games.all();
@@ -126,7 +170,7 @@ angular.module('starter.controllers', ['ionic'])
       if (saved){
         $scope.count = $scope.popup.count;
         $scope.selectedGame = $scope.popup.selectedGame;
-        Games.saveSelected($scope.selectedGame);
+        Games.setSelected($scope.selectedGame);
         $scope.refreshPredict();
         console.log('Tapped!', $scope.popup.count);
       }
@@ -136,14 +180,12 @@ angular.module('starter.controllers', ['ionic'])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('OptionsCtrl', function($scope, $ionicPopup, Options) {
+.controller('OptionsCtrl', function($window, $scope, $ionicPopup, Styles, Options) {
+
   $scope.options = Options.all();
   $scope.showStyleDialog = function(){
-    console.log(Options.all());
     $scope.popup = {};
-    $scope.popup.style = {};
-    $scope.popup.style = $scope.options.style.value;
-    console.log(  $scope.popup.style);
+    $scope.popup.styleId = $scope.options.style.id;
     var myPopup = $ionicPopup.show({
       title: '',
       subTitle: '',
@@ -156,28 +198,19 @@ angular.module('starter.controllers', ['ionic'])
           }
         },
         { text: '<b>Save</b>',
-          type: 'button-positive',
+          type: 'button-'+$scope.options.style.name,
           onTap: function(e) {
-            if (!$scope.popup.count) {
-              //don't allow the user to close unless he enters wifi password
-              e.preventDefault();
-            } else if ($scope.popup.count<=0){
-              $scope.popup.count = 10;
-              e.preventDefault();
-            } else {
+            if ($scope.popup.styleId) {
               return true;
             }
-            return false;
           }
         }
       ]
     }).then(function(saved) {
       if (saved){
-        $scope.count = $scope.popup.count;
-        $scope.selectedGame = $scope.popup.selectedGame;
-        Games.saveSelected($scope.selectedGame);
-        $scope.refreshPredict();
-        console.log('Tapped!', $scope.popup.count);
+        Options.load($scope.options.style, Styles.get($scope.popup.styleId));
+        Options.saveAll();
+        $window.location.reload(true)
       }
     });
   };
