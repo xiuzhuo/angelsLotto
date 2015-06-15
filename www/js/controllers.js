@@ -76,6 +76,7 @@ angular.module('starter.controllers', ['ionic'])
   console.log($scope.refreshGame);
 })
 .controller('PredictCtrl', function($scope, Games, $ionicActionSheet, $ionicPopup, $timeout, $q, $window) {
+
   $scope.games = Games.all();
   Games.call(Games.get(0));
   if (!$scope.count){
@@ -83,62 +84,15 @@ angular.module('starter.controllers', ['ionic'])
   };
   $scope.selectedGame = Games.getSelected();
   $scope.refreshPredict = function(){
-    var selectedGame = $scope.selectedGame;
-    var Lottos = [];
-    var calc = function() {
-      var deferred = $q.defer();
-      setTimeout(function(){
-        var count = $scope.count;
-        var allNumbers = [];
-        var allExtras = [];
-
-        for (var i = 0; i < count;i++){
-          var lotto={};
-          lotto.values=[];
-          lotto.extras=[];
-          if (allNumbers.length < selectedGame.normalNumbersCount){
-            allNumbers = selectedGame.normalNumbers.slice();
-          }
-          for (var j = 0; j < selectedGame.normalNumbersCount; j++){
-            var index=Math.floor(Math.random() * allNumbers.length);
-            lotto.values.push(allNumbers[index]);
-            allNumbers.splice(index,1);
-          }
-
-          if (allExtras.length < selectedGame.specialNumbersCount){
-            allExtras = selectedGame.specialNumbers.slice();
-          }
-          for (var j = 0; j < selectedGame.specialNumbersCount; j++){
-            var index = Math.floor(Math.random() * allExtras.length);
-            lotto.extras.push(allExtras[index]);
-            allExtras.splice(index, 1);
-          }
-          lotto.values.sort(function(a, b){return a-b});
-          lotto.extras.sort(function(a, b){return a-b});
-          Lottos.push(lotto);
-        }
-
-        deferred.resolve('Done! '+Lottos);
-      }, 100);
-      return deferred.promise;
-    };
-    var promise = calc();
-    promise.then(function(greeting) {
-      console.log('Success: ' + greeting);
-      $scope.lottos=Lottos;
-      $scope.$broadcast('scroll.refreshComplete');
-    }, function(reason) {
-      console.log('Failed: ' + reason);
-    }, function(update) {
-      console.log('Got notification: ' + update);
-    });
-    return this;
+    console.log($scope.selectedGame);
+    $scope.lottos = $scope.selectedGame.calcPredict($scope.count);
   };
   $scope.refreshPredict();
   $scope.showOptionDialog = function(){
     $scope.popup = {};
     $scope.popup.count = $scope.count;
     $scope.popup.selectedGame =  $scope.selectedGame;
+    console.log($scope.games);
     var myPopup = $ionicPopup.show({
       title: '',
       subTitle: '',
@@ -156,7 +110,7 @@ angular.module('starter.controllers', ['ionic'])
             if (!$scope.popup.count) {
               //don't allow the user to close unless he enters wifi password
               e.preventDefault();
-            } else if ($scope.popup.count<=0){
+            } else if ($scope.popup.count <= 0){
               $scope.popup.count = 10;
               e.preventDefault();
             } else {
@@ -183,6 +137,7 @@ angular.module('starter.controllers', ['ionic'])
 .controller('OptionsCtrl', function($window, $scope, $ionicPopup, Styles, Options) {
 
   $scope.options = Options.all();
+
   $scope.showStyleDialog = function(){
     $scope.popup = {};
     $scope.popup.styleId = $scope.options.style.id;
@@ -198,7 +153,7 @@ angular.module('starter.controllers', ['ionic'])
           }
         },
         { text: '<b>Save</b>',
-          type: 'button-'+$scope.options.style.name,
+          type: 'button-' + $scope.options.style.name,
           onTap: function(e) {
             if ($scope.popup.styleId) {
               return true;

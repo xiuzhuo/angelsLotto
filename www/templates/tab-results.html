@@ -20,7 +20,7 @@
           <select class="ej" ng-model="result" ng-options="result.pretty for result in general[general.years[0]]" ng-change="changeDrawday(result.date)"></select>
         </div>
         <div class="row" style="text-align:center">
-          <div ng-repeat="number in detail[drawday].lotto.gewinnzahlen" class="col">
+          <div ng-repeat="number in detail[drawday][game.nick].gewinnzahlen" class="col">
             <button class="ball ball-normal">{{number}}</button>
           </div>
           <div ng-repeat="number in detail[drawday].lotto.superzahl" class="col">
