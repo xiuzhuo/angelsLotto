@@ -1,4 +1,10 @@
-<label class="item item-input" style="{{popup.showDetail?'visibility:visible':'visibility:hidden'}}">
-  <span class="input-label">Secret</span>
-  <input type="text">
-</label>
+<div>
+  <div ng-if="popup.showDetail">
+    <label class="item item-input" style="{{popup.showDetail?'visibility:visible':'visibility:hidden'}}">
+      <input type="text" class="text-center" autofocus placeholder="^_^">
+    </label>
+  </div>
+  <div ng-if="!popup.showDetail" class="text-center">
+    ^_^
+  </div>
+</div>

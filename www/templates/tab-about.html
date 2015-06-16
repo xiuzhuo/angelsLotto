@@ -8,26 +8,49 @@
     <button ng-click="makeDonate()">Make a donate :D</button>
   </ion-content>
 </ion-view> -->
-<ion-view view-title="About" class="scroll">
+<!-- <ion-view view-title="About" class="scroll">
   <ion-content>
-    <!-- <ion-slide-box>
-      <ion-slide> -->
+     <ion-slide-box>
+      <ion-slide>
         <div>This App is developed for the people wanted to play lotto but has no idea which number to choose.
         It will not increase the chance for you to win but help you to make decision.
         If you really win the a big deal with this app, it will be very kind of you to share with me and/or make a donate :D Thanks!
         </div>
         <button ng-click="aboutMe(false)" on-hold="aboutMe(true)">About me :)</button>
         <button ng-click="makeDonate()">Make a donate :D</button>
-      <!-- </ion-slide>
-      <ion-slide>
-        <div class="box blue"><h1>BLUE</h1></div>
-      </ion-slide>
-      <ion-slide>
-        <div class="box yellow"><h1>YELLOW</h1></div>
-      </ion-slide>
-      <ion-slide>
-        <div class="box pink"><h1>PINK</h1></div>
-      </ion-slide>
-    </ion-slide-box> -->
+  </ion-content>
+</ion-view> -->
+
+
+<ion-view view-title="About">
+  <ion-content class="padding">
+    <div class="list card">
+      <div class="item item-divider {{options.style.name}}">Options</div>
+      <div class="item item-button-right" ng-click="changeStyle()">
+          Style
+          <button class="button button-{{options.style.name}}">
+          {{options.style.name}}
+          </button>
+      </div>
+    </div>
+    <div class="list card">
+      <div class="item item-divider {{options.style.name}}">About</div>
+      <div class="item item-body">
+        <div>
+          This App is developed for the people wanted to play lotto but has no idea which number to choose.
+          It will not increase the chance for you to win but help you to make decision.
+          If you really win the a big deal with this app, you can
+        </div>
+        <br/>
+        <button class="button button-{{options.style.name}}" ng-click="makeDonate()"> make a donate :-)</button>
+      </div>
+      <div class="item item-body">
+        <div>
+        me ^_^
+        </div>
+        <br/>
+        <button class="button button-{{options.style.name}}" style="cursor:pointer" ng-click="aboutMe()">Web/mobile developer</button>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

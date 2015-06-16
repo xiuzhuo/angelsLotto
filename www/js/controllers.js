@@ -8,69 +8,100 @@ angular.module('starter.controllers', ['ionic'])
   $scope.options = Options.all();
 })
 
-.controller('ResultsCtrl', function($scope, $ionicHistory, $ionicActionSheet, $timeout, $http, Games) {
-  Games.setOnSelectedChangeListener('ResultsCtrl', function(){
+.controller('ResultCtrl', function($scope, $ionicHistory, $ionicActionSheet, $timeout, $http, Games) {
+  Games.setOnSelectedChangeListener('ResultCtrl', function(){
     $ionicHistory.clearCache();
   });
-  var parseResultGeneral = function(jsonText, drawday, fromCache){
-    var data = JSON.parse(jsonText);
-    $scope.general = data;
-    $scope.result = data[data.years[0]][0];
-    console.log($scope.result);
-    var years = data.years;
-    for (var key in data){
-      if (key == years[0]){
-        // for (key2 in data[key]){
-        //   console.log(data[key][key2].date == drawday);
-        //   if (data[key][key2].date == drawday){
-        //     $scope.result = data[key][key2];
-        //     console.log($scope.result);
-        //   }
-        // }
-      } else if (key == 'years'){
 
-      } else {
-        drawday = key;
+  var fetchArchiv = function(game){
+    var parseArchiv = function (data){
+      for (var key in data){
+        game.result[key] = data[key];
       }
+      game.drawday = data[data.years[0]][0];
+      console.log(game);
     }
-
-    fetchResultDetail(drawday, fromCache);
-  }
-  var parseResultDetail = function(jsonText, drawday, fromCache){
-    var data = JSON.parse(jsonText);
-    $scope.drawday = drawday;
-    $scope.detail = data;
-  }
-  var fetchResultGeneral = function(drawday){
-    $http.get(Games.getSelected().apis.archiv)
+    $http.get(game.apis.archiv)
       .success(function(data, status, headers, config){
-        console.log(data);
-        parseResultGeneral(JSON.stringify(data), drawday, false);
+        parseArchiv(data);
       })
       .error(function(data, status, headers, config) {
+        alert("error status="+status);
+      });
+  };
 
-        parseResultGeneral($scope.selectedGame.dummyDataGeneral, drawday, true);
+  var fetchDrawday = function(game, drawday){
+    var parseDrawday = function(data){
+      for (key in data){
+        game.result[key] = data[key];
+      }
+    };
+    $http.get(game.apis.archiv+'?drawday='+drawday.date)
+    .success(function(data, status, headers, config){
+      parseDrawday(data);
+    })
+    .error(function(data, status, headers, config) {
+
+    });
+  }
+
+  var fetchResultGeneral = function(game){
+    var parseResultGeneral = function(game, jsonText){
+      var data = JSON.parse(jsonText);
+      $scope.games[game.id].general = data;
+      // $scope.games[game.id].result = data[data.years[0]][0];
+      var drawday;
+      for (var key in data){
+        if (key == data.years[0]){
+          // for (key2 in data[key]){
+          //   console.log(data[key][key2].date == drawday);
+          //   if (data[key][key2].date == drawday){
+          //     $scope.result = data[key][key2];
+          //     console.log($scope.result);
+          //   }
+          // }
+        } else if (key == 'years'){
+
+        } else {
+          drawday = key;
+        }
+      }
+      fetchResultDetail(game, drawday);
+    }
+    $http.get(game.apis.archiv)
+      .success(function(data, status, headers, config){
+        parseResultGeneral(game, JSON.stringify(data), false);
+      })
+      .error(function(data, status, headers, config) {
+        parseResultGeneral(game, game.dummyDataGeneral, true);
       });
   }
-  var fetchResultDetail = function(drawday){
-
+  var fetchResultDetail = function(game, drawday){
+    var parseResultDetail = function(game, jsonText, drawday){
+      var data = JSON.parse(jsonText);
+      $scope.games[game.id].drawday = drawday;
+      $scope.games[game.id].detail = data;
+    }
     if (drawday){
-      $http.get(Games.getSelected().apis.archiv+'?drawday='+drawday)
+      $http.get(game.apis.archiv+'?drawday='+drawday)
         .success(function(data, status, headers, config){
-          parseResultDetail(JSON.stringify(data), drawday, false);
+          parseResultDetail(game, JSON.stringify(data), drawday);
         })
         .error(function(data, status, headers, config) {
-          parseResultDetail($scope.selectedGame.dummyDataDetail, drawday, true);
+          parseResultDetail(game, game.dummyDataDetail, drawday);
         });
     }
   }
-  $scope.changeDrawday = function(data){
-    fetchResultDetail(data);
+  $scope.changeDrawday = function(game){
+    console.log(game);
+    fetchDrawday(game, game.drawday);
   }
   $scope.games = Games.all();
   $scope.selectedGame = Games.getSelected();
   $scope.refreshGame = function(){
-    fetchResultGeneral();
+    for (var key in $scope.games){
+      fetchArchiv($scope.games[key]);
+    }
   };
   $scope.refreshGame();
   console.log($scope.refreshGame);
@@ -131,14 +162,9 @@ angular.module('starter.controllers', ['ionic'])
     });
   };
 })
-
-.controller('DashCtrl', function($scope) {})
-
-.controller('OptionsCtrl', function($window, $scope, $ionicPopup, Styles, Options) {
-
+.controller('AboutCtrl', function($window, $scope, $ionicPopup, Games, Options, Styles) {
   $scope.options = Options.all();
-
-  $scope.showStyleDialog = function(){
+  $scope.changeStyle = function(){
     $scope.popup = {};
     $scope.popup.styleId = $scope.options.style.id;
     var myPopup = $ionicPopup.show({
@@ -169,22 +195,33 @@ angular.module('starter.controllers', ['ionic'])
       }
     });
   };
-})
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
 
-.controller('AboutCtrl', function($scope, $ionicPopup, Games) {
+
+  var aboutCount = 0;
+  var aboutClickTime = 0;
+
   $scope.games = Games.all();
+  $scope.options = Options.all();
   $scope.popup = {};
-  $scope.aboutMe = function(showDetail){
-    $scope.popup.sum = 0;
-    $scope.popup.winnedGame =  Games.getSelected();
-    $scope.popup.showDetail = showDetail;
+
+  $scope.aboutMe = function(){
+    console.log(aboutCount);
+    var time = new Date().getTime();
+    if (time - aboutClickTime > 10000){
+      aboutCount = 0;
+    }
+    aboutClickTime = time;
+    aboutCount++;
+    if (aboutCount > 2){
+      $scope.popup.showDetail = true;
+      aboutCount = 0;
+    } else{
+      $scope.popup.showDetail = false;
+    }
     var options = {
       title: 'About More!',
-      subTitle: 'I am very clever!',
+      subTitle: '',
       templateUrl: 'templates/popup-about.html',
       scope: $scope,
       buttons: [
@@ -196,10 +233,10 @@ angular.module('starter.controllers', ['ionic'])
         }
       ]
     };
-    if (showDetail){
+    if ($scope.popup.showDetail ){
       options.buttons.push({
         text: '<b>Know More!</b>',
-        type: 'button-positive',
+        type: 'button-'+ $scope.options.style.name,
         onTap: function(e) {
           if (!$scope.popup.sum) {
             e.preventDefault();
@@ -234,7 +271,7 @@ angular.module('starter.controllers', ['ionic'])
         },
         {
           text: '<b>Donate</b>',
-          type: 'button-positive',
+          type: 'button-' + $scope.options.style.name,
           onTap: function(e) {
             if (!$scope.popup.sum) {
               e.preventDefault();

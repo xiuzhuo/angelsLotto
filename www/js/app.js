@@ -36,13 +36,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   })
 
   // Each tab has its own nav history stack:
-  .state('tab.results', {
-    url: '/results',
+  .state('tab.result', {
+    url: '/result',
     cache: true,
     views: {
-      'tab-results': {
-        templateUrl: 'templates/tab-results.html',
-        controller: 'ResultsCtrl'
+      'tab-result': {
+        templateUrl: 'templates/tab-result.html',
+        controller: 'ResultCtrl'
       }
     }
   })
@@ -67,15 +67,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
-  .state('tab.options', {
-      url: '/options',
-      views: {
-        'tab-options': {
-          templateUrl: 'templates/tab-options.html',
-          controller: 'OptionsCtrl'
-        }
-      }
-    })
+
     .state('tab.chat-detail', {
       url: '/chats/:chatId',
       views: {
